@@ -1,2 +1,2 @@
 # youtube-clone
-Youtube Clone built using NodeJS, Express, Mongo and ES
+Youtube-Clone built using NodeJS, Express, Mongo and ES6
