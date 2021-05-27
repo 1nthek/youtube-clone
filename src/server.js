@@ -1,8 +1,10 @@
 import express from "express";
+import morgan from "morgan";
 
 const PORT = 4000;
 
 const app = express();
+const logger = morgan("dev");
 
 const urlLogger = (req, res, next) => {
   const { url } = req;
@@ -53,6 +55,7 @@ app.use(timeLogger);
 app.use(securityLogger);
 app.use(protectorMiddleware);
 
+app.use(logger);
 app.get("/", handleHome);
 app.get("/protected", handleProtected);
 
