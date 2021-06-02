@@ -4,6 +4,12 @@ html(lang='ko')
         title #{pageTitle} | Youtube
         link(rel="stylesheet", href="https://unpkg.com/mvp.css")
     body
-    main
-        block content
-    include components/footer.pug
+        header       
+            h1=pageTitle
+            nav 
+                ul 
+                    li 
+                        a(href="/videos/upload") Upload Video
+        main
+            block content
+    include components/footer

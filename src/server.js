@@ -9,12 +9,6 @@ const PORT = 4000;
 const app = express();
 const logger = morgan('dev');
 
-app.set('view engine', 'pug');
-app.set('views', process.cwd() + '/src/views');
-app.use('/', globalRouter);
-app.use('/videos', videoRouter);
-app.use('/users', userRouter);
-
 const urlLogger = (req, res, next) => {
   const { url } = req;
   console.log(`Path: ${url}`);
@@ -41,14 +35,6 @@ const securityLogger = (req, res, next) => {
   next();
 };
 
-const protectorMiddleware = (req, res, next) => {
-  const { url } = req;
-  if (url === '/protected') {
-    return res.send('<h1>Not Allowed</h1>');
-  }
-  next();
-};
-
 const handleHome = (req, res) => {
   //   return res.end();
   return res.send('<h1>Home Page</h1>');
@@ -59,12 +45,20 @@ const handleProtected = (req, res) => {
 };
 
 // 애플리케이션 레벨 미들웨어 -> 앱이 요청을 수신할 때마다 실행
+
+app.set('view engine', 'pug');
+app.set('views', process.cwd() + '/src/views');
+
 app.use(urlLogger);
 app.use(timeLogger);
 app.use(securityLogger);
-app.use(protectorMiddleware);
-
 app.use(logger);
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/', globalRouter);
+app.use('/videos', videoRouter);
+app.use('/users', userRouter);
+
 app.get('/', handleHome);
 app.get('/protected', handleProtected);
 
