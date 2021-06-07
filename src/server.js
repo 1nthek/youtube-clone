@@ -4,14 +4,8 @@ import globalRouter from './router/globalRouter';
 import userRouter from './router/userRouter';
 import videoRouter from './router/videoRouter';
 
-const PORT = 4000;
-
 const app = express();
 const logger = morgan('dev');
-
-app.use('/', globalRouter);
-app.use('/videos', videoRouter);
-app.use('/users', userRouter);
 
 const urlLogger = (req, res, next) => {
   const { url } = req;
@@ -39,33 +33,18 @@ const securityLogger = (req, res, next) => {
   next();
 };
 
-const protectorMiddleware = (req, res, next) => {
-  const { url } = req;
-  if (url === '/protected') {
-    return res.send('<h1>Not Allowed</h1>');
-  }
-  next();
-};
-
-const handleHome = (req, res) => {
-  //   return res.end();
-  return res.send('<h1>Home Page</h1>');
-};
-
-const handleProtected = (req, res) => {
-  return res.send('<h1>Protected Page</h1>');
-};
+app.set('view engine', 'pug');
+app.set('views', process.cwd() + '/src/views');
 
 // 애플리케이션 레벨 미들웨어 -> 앱이 요청을 수신할 때마다 실행
 app.use(urlLogger);
 app.use(timeLogger);
 app.use(securityLogger);
-app.use(protectorMiddleware);
-
 app.use(logger);
-app.get('/', handleHome);
-app.get('/protected', handleProtected);
+app.use(express.urlencoded({ extended: true }));
 
-const handleListening = () => console.log('Server listening on port 4000 💥⚡️');
+app.use('/', globalRouter);
+app.use('/videos', videoRouter);
+app.use('/users', userRouter);
 
-app.listen(PORT, handleListening);
+export default app;
